@@ -1,2 +1,4 @@
-backend/node_modules
-/generated/prisma
+node_modules
+generated/prisma
+dist
+

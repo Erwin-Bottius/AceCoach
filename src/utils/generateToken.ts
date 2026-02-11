@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const generateToken = (userId: string) => {
+export const generateToken = (userId: string) => {
   const secret =
     process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
   const payload = { userId };
@@ -10,4 +10,12 @@ const generateToken = (userId: string) => {
   return token;
 };
 
-export default generateToken;
+export const generateRefreshToken = (userId: string) => {
+  const secret =
+    process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
+  const payload = { userId };
+
+  const refreshToken = jwt.sign(payload, secret, { expiresIn: "7d" });
+
+  return refreshToken;
+};

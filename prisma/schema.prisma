@@ -9,6 +9,7 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -27,4 +28,29 @@ model User {
   role Role  
   password String
   createdAt DateTime @default(now())
+
+  //Relations
+  classesTaught Class[] @relation("TeacherClasses")
+  classesJoined Class[] @relation("ClassStudents")
+  students  User[]   @relation("TeacherStudents")
+  teachers  User[]   @relation("TeacherStudents")
+}
+
+model Class {
+  id        String   @id @default(uuid())
+  name      String
+  theme     String
+  date      DateTime
+  duration  Int      
+  capacity  Int?
+  level     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation 
+  teacherID   String
+  teacher     User     @relation("TeacherClasses", fields: [teacherID], references: [id])
+  students    User[]   @relation("ClassStudents")
+
+  @@index([teacherID])
 }

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Class" ALTER COLUMN "capacity" DROP NOT NULL,
+ALTER COLUMN "level" DROP NOT NULL;

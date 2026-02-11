@@ -1,42 +1,75 @@
-import app from "./app";
-const port = process.env.PORT || 3000;
-import { config } from "dotenv";
-import helloRoutes from "./routes/helloRoutes";
-import authRoutes from "./routes/auth.route";
+import "dotenv/config";
+import express from "express";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@as-integrations/express5";
+import typeDefs from "./graphql/typedefs";
+import resolvers from "./graphql/resolvers";
 import { connectToDB, disconnectFromDB } from "./config/db";
+import { verifyToken } from "./utils/verifyToken";
+import { createContext } from "./graphql/context";
 
-config();
-connectToDB();
+const PORT = process.env.PORT || 3000;
 
-app.use("/test", helloRoutes);
-app.use("/auth", authRoutes);
+async function startServer() {
+  // 1️⃣ Connexion à la DB
+  await connectToDB();
 
-const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+  // 2️⃣ Création de l'app Express
+  const app = express();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-// handle unhandled promise rejections
-process.on("unhandledRejection", (err) => {
-  console.error("Uncaught exception:", err);
-  server.close(async () => {
+  // 4️⃣ Création et démarrage du serveur Apollo
+  const apolloServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+  await apolloServer.start(); // async, d’où la fonction enveloppante
+
+  // 5️⃣ Middleware Apollo
+  app.use(
+    "/graphql",
+    expressMiddleware(apolloServer, {
+      context: createContext,
+    }),
+  );
+
+  // 6️⃣ Démarrage du serveur HTTP Express
+  const httpServer = app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+
+  // 7️⃣ Graceful shutdown
+  const shutdown = async () => {
+    console.log("Shutting down gracefully...");
+    httpServer.close(async () => {
+      await disconnectFromDB();
+      console.log("Closed remaining connections");
+      process.exit(0);
+    });
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
+
+  // 8️⃣ Gestion des erreurs non catchées
+  process.on("unhandledRejection", async (err) => {
+    console.error("Unhandled rejection:", err);
     await disconnectFromDB();
     process.exit(1);
   });
-});
 
-// handle unhandled promise exception
-process.on("unhandledRejection", async (err) => {
-  console.error("Uncaught exception:", err);
-  await disconnectFromDB();
-  process.exit(1);
-});
-
-// Graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received, shutting down gracefully");
-  server.close(async () => {
+  process.on("uncaughtException", async (err) => {
+    console.error("Uncaught exception:", err);
     await disconnectFromDB();
-    console.log("Closed out remaining connections");
-    process.exit(0);
+    process.exit(1);
   });
+
+  return httpServer;
+}
+
+// Démarrage du serveur
+startServer().catch((err) => {
+  console.error("Error starting server:", err);
+  process.exit(1);
 });

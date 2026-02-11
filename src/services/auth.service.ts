@@ -1,46 +1,63 @@
-import { prisma } from "../config/db";
 import bcrypt from "bcryptjs";
-import { SignupInput, LoginInput } from "../schemas/auth.schema";
-import generateToken from "../utils/generateToken";
+import { prisma } from "../config/db";
+import { verifyToken } from "../utils/verifyToken";
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+import jwt from "jsonwebtoken";
+import { generateRefreshToken, generateToken } from "../utils/generateToken";
+import { SignupInput, LoginInput } from "../inputSchemas/auth.schema";
 
-export const signup = async (data: SignupInput) => {
-  const { email, password, firstName, lastName, role } = data;
-
+export async function signup(input: SignupInput) {
+  console.log("Signup input:", input);
+  const { email } = input;
   const isUserExists = await prisma.user.findUnique({
     where: { email },
   });
   if (isUserExists) {
-    return { error: "USER_ALREADY_EXISTS", user: null, token: null };
+    throw new Error("Email already in use");
   }
-
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await bcrypt.hash(input.password, salt);
 
   const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      lastName,
-      firstName,
-      role,
-    },
+    data: { ...input, password: hashedPassword },
   });
+  console.log("User created:", user);
+  const token = generateToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+  return { token, refreshToken, user };
+}
+
+export async function login(input: { email: string; password: string }) {
+  const user = await prisma.user.findUnique({ where: { email: input.email } });
+  if (!user) throw new Error("Invalid password or email");
+
+  const valid = await bcrypt.compare(input.password, user.password);
+  if (!valid) throw new Error("Invalid password or email");
 
   const token = generateToken(user.id);
-  return { user, error: null, token: token };
-};
+  const refreshToken = generateRefreshToken(user.id);
 
-export const login = async (data: LoginInput) => {
-  const { email, password } = data;
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-  const isPasswordValid = await bcrypt.compare(password, user?.password || "");
+  return { token, refreshToken, user };
+}
 
-  if (!user || !isPasswordValid) {
-    return { error: "INVALID_EMAIL_OR_PASSWORD", user: null, token: null };
+export async function refreshTheToken(userID: string, refreshToken: string) {
+  try {
+    const JwtUser = verifyToken(refreshToken);
+
+    const user = await prisma.user.findUnique({
+      where: { id: JwtUser.userId },
+    });
+    if (!user) throw new Error("User not found");
+
+    const newToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "1h" },
+    );
+    const newRefreshToken = generateRefreshToken(userID);
+
+    return { token: newToken, refreshToken: newRefreshToken, user };
+  } catch (err) {
+    throw new Error("Invalid refresh token");
   }
-
-  const token = generateToken(user.id);
-  return { user, error: null, token };
-};
+}

@@ -124,6 +124,106 @@ const classResolvers = {
         });
       },
     ),
+
+    joinClass: requireAuth(
+      async (_parent: any, args: { classID: string }, context: any) => {
+        const userId = context.user?.id;
+        if (!userId) throw new Error("Unauthorized");
+        if (context.user?.role !== "STUDENT")
+          throw new Error("Forbidden, you cannot join a class as a teacher");
+        const existingClass = await prisma.class.findUnique({
+          where: { id: args.classID },
+        });
+        if (!existingClass) throw new Error("Class not found");
+        const isStudentInClass = await prisma.class.findFirst({
+          where: {
+            id: args.classID,
+            students: {
+              some: {
+                id: userId,
+              },
+            },
+          },
+        });
+        if (isStudentInClass)
+          throw new Error("You are already a student in this class");
+
+        return prisma.class.update({
+          where: { id: args.classID },
+          data: { students: { connect: { id: userId } } },
+          include: {
+            teacher: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+              },
+            },
+            students: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+              },
+            },
+          },
+        });
+      },
+    ),
+    leaveClass: requireAuth(
+      async (_parent: any, args: { classID: string }, context: any) => {
+        const userId = context.user?.id;
+        if (!userId) throw new Error("Unauthorized");
+        if (context.user?.role !== "STUDENT")
+          throw new Error("Forbidden, you cannot leave a class as a teacher");
+        const existingClass = await prisma.class.findUnique({
+          where: { id: args.classID },
+        });
+        if (!existingClass) throw new Error("Class not found");
+        const isStudentInClass = await prisma.class.findFirst({
+          where: {
+            id: args.classID,
+            students: {
+              some: {
+                id: userId,
+              },
+            },
+          },
+        });
+        if (!isStudentInClass)
+          throw new Error(
+            "You are not a student in this class, so you cannot leave it",
+          );
+        return prisma.class.update({
+          where: { id: args.classID },
+          data: { students: { disconnect: { id: userId } } },
+          include: {
+            teacher: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+              },
+            },
+            students: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+              },
+            },
+          },
+        });
+      },
+    ),
   },
 };
 

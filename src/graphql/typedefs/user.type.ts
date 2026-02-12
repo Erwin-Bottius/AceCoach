@@ -12,6 +12,8 @@ const userTypeDefs = gql`
     firstName: String!
     lastName: String!
     role: Role!
+    classesTaught: [Class!]
+    classesJoined: [Class!]
   }
 
   type AuthPayload {

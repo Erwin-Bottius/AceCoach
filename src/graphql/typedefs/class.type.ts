@@ -41,6 +41,10 @@ const classTypeDefs = gql`
       students: [ID!]
     ): Class!
 
+    joinClass(classID: ID!): Class!
+
+    leaveClass(classID: ID!): Class!
+
     deleteClass(id: ID!): Class!
   }
 `;

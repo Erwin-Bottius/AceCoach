@@ -24,10 +24,10 @@ const authResolvers = {
       const { email, password } = args;
 
       const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) throw new Error("No user found with this email");
+      if (!user) throw new Error("email or password invalid");
 
       const valid = await bcrypt.compare(password, user.password);
-      if (!valid) throw new Error("Invalid password");
+      if (!valid) throw new Error("email or password invalid");
 
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
         expiresIn: "7d",

@@ -4,7 +4,7 @@ import ts from "typescript-eslint";
 import prettier from "eslint-plugin-prettier";
 
 export default [
-  { ignores: ["src/test/**", "**/node_modules/**", "dist/**"] },
+  { ignores: ["src/test/**", "**/node_modules/**", "dist/**", "src/generated/prisma"] },
   js.configs.recommended,
   ...ts.configs.recommended,
   {

@@ -1,9 +1,9 @@
 import { prisma } from "../test/setup";
 import classResolvers from "../graphql/resolvers/class.resolver";
-import { GraphQLResolveInfo } from "graphql";
-import { Request, Response } from "express";
-import { ClassInput, ClassUpdateInput } from "../inputSchemas/class.schema";
-import { Class } from "../types/class";
+import type { GraphQLResolveInfo } from "graphql";
+import type { Request, Response } from "express";
+import type { ClassInput, ClassUpdateInput } from "../inputSchemas/class.schema";
+import type { Class } from "../types/class";
 
 // =============================================
 // 1. Initial Setup and Cleanup
@@ -211,12 +211,7 @@ describe("Class Resolvers", () => {
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { id: createdClass.id };
       await expect(
-        classResolvers.Mutation.deleteClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.deleteClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Unauthorized");
     });
 
@@ -228,12 +223,7 @@ describe("Class Resolvers", () => {
       };
       const args = { id: createdClass.id };
       await expect(
-        classResolvers.Mutation.deleteClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.deleteClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Forbidden");
     });
 
@@ -245,12 +235,7 @@ describe("Class Resolvers", () => {
       };
       const args = { id: "non-existent-id" };
       await expect(
-        classResolvers.Mutation.deleteClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.deleteClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Class not found");
     });
     it("✅ Should delete a class if the user is the teacher", async () => {
@@ -309,12 +294,7 @@ describe("Class Resolvers", () => {
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { classID: createdClass.id };
       await expect(
-        classResolvers.Mutation.joinClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Unauthorized");
     });
 
@@ -326,12 +306,7 @@ describe("Class Resolvers", () => {
       };
       const args = { classID: createdClass.id };
       await expect(
-        classResolvers.Mutation.joinClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Forbidden");
     });
 
@@ -343,12 +318,7 @@ describe("Class Resolvers", () => {
       };
       const args = { classID: "non-existent-id" };
       await expect(
-        classResolvers.Mutation.joinClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Class not found");
     });
 
@@ -360,20 +330,10 @@ describe("Class Resolvers", () => {
       };
       const args = { classID: createdClass.id };
       // First join
-      await classResolvers.Mutation.joinClass(
-        null,
-        args,
-        context,
-        {} as GraphQLResolveInfo,
-      );
+      await classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo);
       // Second join (should fail)
       await expect(
-        classResolvers.Mutation.joinClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("You are already a student in this class");
     });
   });
@@ -418,12 +378,7 @@ describe("Class Resolvers", () => {
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { classID: createdClass.id };
       await expect(
-        classResolvers.Mutation.leaveClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Unauthorized");
     });
 
@@ -435,12 +390,7 @@ describe("Class Resolvers", () => {
       };
       const args = { classID: createdClass.id };
       await expect(
-        classResolvers.Mutation.leaveClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Forbidden");
     });
 
@@ -452,12 +402,7 @@ describe("Class Resolvers", () => {
       };
       const args = { classID: "non-existent-id" };
       await expect(
-        classResolvers.Mutation.leaveClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Class not found");
     });
 
@@ -474,12 +419,7 @@ describe("Class Resolvers", () => {
         data: { students: { disconnect: { id: student.id } } },
       });
       await expect(
-        classResolvers.Mutation.leaveClass(
-          null,
-          args,
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("You are not a student in this class");
     });
   });
@@ -506,12 +446,7 @@ describe("Class Resolvers", () => {
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
       const context = { user: null, req: {} as Request, res: {} as Response };
       await expect(
-        classResolvers.Query.getAllClasses(
-          null,
-          {},
-          context,
-          {} as GraphQLResolveInfo,
-        ),
+        classResolvers.Query.getAllClasses(null, {}, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Unauthorized");
     });
   });

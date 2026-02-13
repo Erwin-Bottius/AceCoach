@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const generateToken = (userId: string) => {
-  const secret =
-    process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
+  const secret = process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
   const payload = { userId };
 
   const token = jwt.sign(payload, secret, { expiresIn: "24h" });
@@ -11,8 +10,7 @@ export const generateToken = (userId: string) => {
 };
 
 export const generateRefreshToken = (userId: string) => {
-  const secret =
-    process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
+  const secret = process.env.JWT_SECRET || "dnwodnwdhe>.whdiuewdlk!@*)(*ndnawjfbski";
   const payload = { userId };
 
   const refreshToken = jwt.sign(payload, secret, { expiresIn: "7d" });

@@ -5,7 +5,6 @@ import { expressMiddleware } from "@as-integrations/express5";
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import { connectToDB, disconnectFromDB } from "./config/db";
-import { verifyToken } from "./utils/verifyToken";
 import { createContext } from "./graphql/context";
 
 const PORT = process.env.PORT || 3000;
@@ -35,16 +34,13 @@ async function startServer() {
   );
 
   // 6️⃣ Démarrage du serveur HTTP Express
-  const httpServer = app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  const httpServer = app.listen(PORT, () => {});
 
   // 7️⃣ Graceful shutdown
   const shutdown = async () => {
-    console.log("Shutting down gracefully...");
     httpServer.close(async () => {
       await disconnectFromDB();
-      console.log("Closed remaining connections");
+
       process.exit(0);
     });
   };

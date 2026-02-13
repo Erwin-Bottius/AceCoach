@@ -4,10 +4,9 @@ import { verifyToken } from "../utils/verifyToken";
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 import jwt from "jsonwebtoken";
 import { generateRefreshToken, generateToken } from "../utils/generateToken";
-import { SignupInput, LoginInput } from "../inputSchemas/auth.schema";
+import type { SignupInput } from "../inputSchemas/auth.schema";
 
 export async function signup(input: SignupInput) {
-  console.log("Signup input:", input);
   const { email } = input;
   const isUserExists = await prisma.user.findUnique({
     where: { email },
@@ -21,7 +20,7 @@ export async function signup(input: SignupInput) {
   const user = await prisma.user.create({
     data: { ...input, password: hashedPassword },
   });
-  console.log("User created:", user);
+
   const token = generateToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
   return { token, refreshToken, user };
@@ -49,15 +48,13 @@ export async function refreshTheToken(userID: string, refreshToken: string) {
     });
     if (!user) throw new Error("User not found");
 
-    const newToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "1h" },
-    );
+    const newToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
     const newRefreshToken = generateRefreshToken(userID);
 
     return { token: newToken, refreshToken: newRefreshToken, user };
   } catch (err) {
-    throw new Error("Invalid refresh token");
+    throw new Error("Invalid refresh token", { cause: err });
   }
 }

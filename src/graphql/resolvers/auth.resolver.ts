@@ -2,11 +2,7 @@ import { prisma } from "../../config/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { signup } from "../../services/auth.service";
-import {
-  LoginInput,
-  SignupInput,
-  signupSchema,
-} from "../../inputSchemas/auth.schema";
+import { signupSchema, type LoginInput, type SignupInput } from "../../inputSchemas/auth.schema";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 

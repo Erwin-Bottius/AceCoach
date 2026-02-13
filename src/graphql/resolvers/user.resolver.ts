@@ -1,8 +1,8 @@
 import { prisma } from "../../config/db";
 
-import { UserInput } from "../../inputSchemas/user.schema";
+import type { UserInput } from "../../inputSchemas/user.schema";
 import { requireAuth } from "../../utils/authWrapper";
-import { MyContext } from "../context";
+import type { MyContext } from "../context";
 
 const userResolvers = {
   Query: {
@@ -42,38 +42,34 @@ const userResolvers = {
       });
     },
     getMe: async (_parent: any, _args: any, context: any) => {
-      console.log("Context in me resolver:", context); // Debug log
-      // context.user doit contenir l'utilisateur connecté
       return context.user || null;
     },
   },
   Mutation: {
-    updateUser: requireAuth(
-      async (_parent: any, args: UserInput, context: MyContext) => {
-        const userId = context.user?.id;
-        if (!userId) throw new Error("Unauthorized");
-        const existingUser = await prisma.user.findUnique({
-          where: { id: userId },
-        });
-        if (!existingUser) throw new Error("Class not found");
+    updateUser: requireAuth(async (_parent: any, args: UserInput, context: MyContext) => {
+      const userId = context.user?.id;
+      if (!userId) throw new Error("Unauthorized");
+      const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+      if (!existingUser) throw new Error("Class not found");
 
-        return prisma.user.update({
-          where: { id: userId },
-          data: {
-            email: args.email,
-            firstName: args.firstName,
-            lastName: args.lastName,
-          },
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-          },
-        });
-      },
-    ),
+      return prisma.user.update({
+        where: { id: userId },
+        data: {
+          email: args.email,
+          firstName: args.firstName,
+          lastName: args.lastName,
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+        },
+      });
+    }),
   },
 };
 

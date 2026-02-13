@@ -7,10 +7,24 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "prepare": "husky install",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
+    "pre-commit": "lint-staged",
+    "lint": "eslint . --ext .ts,.tsx",
     "test:db:start": "docker run --rm --name test-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=test_db -p 5433:5433 -d postgres && sleep 3",
     "test:db:stop": "docker stop test-postgres",
     "test:setup": "npx prisma migrate dev --name init",
     "test": "yarn test:db:start && yarn test:setup && jest && yarn test:db:stop"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@apollo/server": "^5.4.0",
@@ -29,17 +43,25 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.2.0",
-    "eslint": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.55.0",
+    "@typescript-eslint/parser": "^8.55.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
     "nodemon": "^3.1.11",
     "prettier": "^3.8.1",
     "ts-auto-mock": "^3.7.4",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0"
   }
 }

@@ -26,12 +26,7 @@ const userTypeDefs = gql`
     getMe: User
   }
   extend type Mutation {
-    updateUser(
-      email: String
-      firstName: String
-      lastName: String
-      role: Role
-    ): User!
+    updateUser(email: String, firstName: String, lastName: String, role: Role): User!
   }
 `;
 

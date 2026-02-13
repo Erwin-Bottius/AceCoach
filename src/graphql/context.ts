@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { verifyToken, JwtIdUser } from "../utils/verifyToken";
+import { verifyToken } from "../utils/verifyToken";
 import { prisma } from "../config/db";
 import { Role } from "../generated/prisma/enums";
 

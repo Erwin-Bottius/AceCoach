@@ -35,6 +35,7 @@ const classResolvers = {
     createClass: requireAuth(
       async (_parent: any, args: ClassInput, context: MyContext) => {
         const user = context.user;
+
         if (!user || !user.id) throw new Error("Unauthorized");
         if (user.role !== "TEACHER") throw new Error("Forbidden");
 
@@ -74,10 +75,10 @@ const classResolvers = {
         });
 
         if (!existingClass) throw new Error("Class not found");
-        // TODO: Only allow teachers to update  all fields expect teacherID and students, and only if they are the teacher of the class
-        // if (existingClass.teacherID !== userId) {
-        //   throw new Error("Forbidden");
-        // }
+
+        if (existingClass.teacherID !== userId) {
+          throw new Error("Forbidden");
+        }
 
         return prisma.class.update({
           where: { id: args.id },
@@ -111,9 +112,10 @@ const classResolvers = {
 
         const existingClass = await prisma.class.findUnique({
           where: { id: args.id },
-          select: { teacherID: true },
+          select: {
+            teacherID: true,
+          },
         });
-
         if (!existingClass) throw new Error("Class not found");
         if (existingClass.teacherID !== userId) {
           throw new Error("Forbidden");

@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test:db:start": "docker run --rm --name test-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=test_db -p 5432:5432 -d postgres && sleep 3",
+    "test:db:stop": "docker stop test-postgres && docker rm test-postgres",
+    "test:setup": "npx prisma migrate dev --name init",
+    "test": "yarn test:db:start && yarn test:setup && jest && yarn test:db:stop"
   },
   "dependencies": {
     "@apollo/server": "^5.4.0",
@@ -27,10 +31,14 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.2.0",
     "eslint": "^9.39.2",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.11",
     "prettier": "^3.8.1",
+    "ts-auto-mock": "^3.7.4",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

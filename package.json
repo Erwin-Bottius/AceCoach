@@ -7,7 +7,7 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test:db:start": "docker run --rm --name test-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=test_db -p 5432:5432 -d postgres && sleep 3",
+    "test:db:start": "docker run --rm --name test-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=test_db -p 5433:5433 -d postgres && sleep 3",
     "test:db:stop": "docker stop test-postgres",
     "test:setup": "npx prisma migrate dev --name init",
     "test": "yarn test:db:start && yarn test:setup && jest && yarn test:db:stop"

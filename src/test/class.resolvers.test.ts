@@ -11,18 +11,25 @@ import type { Class } from "../types/class";
 describe("Class Resolvers", () => {
   let teacher: any;
   let student: any;
-  let createdClass: any;
+  const prepareCreateClass = async () => {
+    return await prisma.class.create({
+      data: {
+        name: "Pilates",
+        theme: "Fitness",
+        date: new Date().toISOString(),
+        duration: 60,
+        capacity: 10,
+        level: "BEGINNER",
+        teacherID: teacher.id,
+      },
+    });
+  };
 
   beforeAll(async () => {
-    // Supprime toutes les données des tables dans l'ordre inverse des dépendances
-    await prisma.$executeRaw`TRUNCATE TABLE "_ClassStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "_TeacherStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "Class" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE;`;
     // Create a teacher and a student for testing
     teacher = await prisma.user.create({
       data: {
-        email: "teacher1@example.com",
+        email: "teacherClassResolver1@example.com",
         role: "TEACHER",
         firstName: "John",
         lastName: "Doe",
@@ -31,22 +38,13 @@ describe("Class Resolvers", () => {
     });
     student = await prisma.user.create({
       data: {
-        email: "student1@example.com",
+        email: "studentClassResolver@example.com",
         role: "STUDENT",
         firstName: "Jane",
         lastName: "Doe",
         password: "password123",
       },
     });
-  });
-
-  afterAll(async () => {
-    // Clean up the database after tests
-    await prisma.$executeRaw`TRUNCATE TABLE "_ClassStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "_TeacherStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "Class" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE;`;
-    await prisma.$disconnect();
   });
 
   // =============================================
@@ -75,7 +73,6 @@ describe("Class Resolvers", () => {
       )) as Class;
       expect(result.name).toBe("Yoga");
       expect(result.teacher.id).toBe(teacher.id);
-      createdClass = result; // Reuse in other tests
     });
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
@@ -128,6 +125,7 @@ describe("Class Resolvers", () => {
   // =============================================
   describe("updateClass", () => {
     it("✅ Should update a class if the user is the teacher", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: teacher,
         req: {} as Request,
@@ -148,6 +146,7 @@ describe("Class Resolvers", () => {
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
       const context = { user: null, req: {} as Request, res: {} as Response };
+      const createdClass = await prepareCreateClass();
       const args = {
         id: createdClass.id,
         name: "Yoga Updated",
@@ -163,6 +162,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Forbidden if the user is not the teacher of the class", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: student,
         req: {} as Request,
@@ -208,6 +208,7 @@ describe("Class Resolvers", () => {
   // =============================================
   describe("deleteClass", () => {
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
+      const createdClass = await prepareCreateClass();
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { id: createdClass.id };
       await expect(
@@ -216,6 +217,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Forbidden if the user is not the teacher of the class", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: student,
         req: {} as Request,
@@ -239,6 +241,7 @@ describe("Class Resolvers", () => {
       ).rejects.toThrow("Class not found");
     });
     it("✅ Should delete a class if the user is the teacher", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: teacher,
         req: {} as Request,
@@ -259,22 +262,9 @@ describe("Class Resolvers", () => {
   // 5. Tests for `joinClass` Resolver
   // =============================================
   describe("joinClass", () => {
-    beforeEach(async () => {
-      // Recreate a class for each test
-      createdClass = await prisma.class.create({
-        data: {
-          name: "Pilates",
-          theme: "Fitness",
-          date: new Date().toISOString(),
-          duration: 60,
-          capacity: 10,
-          level: "BEGINNER",
-          teacherID: teacher.id,
-        },
-      });
-    });
-
     it("✅ Should allow a student to join a class", async () => {
+      const createdClass = await prepareCreateClass();
+
       const context = {
         user: student,
         req: {} as Request,
@@ -291,6 +281,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
+      const createdClass = await prepareCreateClass();
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { classID: createdClass.id };
       await expect(
@@ -299,6 +290,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Forbidden if the user is not a student", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: teacher,
         req: {} as Request,
@@ -323,6 +315,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw an error if the student is already in the class", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: student,
         req: {} as Request,
@@ -342,29 +335,16 @@ describe("Class Resolvers", () => {
   // 6. Tests for `leaveClass` Resolver
   // =============================================
   describe("leaveClass", () => {
-    beforeEach(async () => {
-      // Recreate a class and add the student
-      createdClass = await prisma.class.create({
-        data: {
-          name: "Pilates",
-          theme: "Fitness",
-          date: new Date().toISOString(),
-          duration: 60,
-          capacity: 10,
-          level: "BEGINNER",
-          teacherID: teacher.id,
-          students: { connect: { id: student.id } },
-        },
-      });
-    });
-
     it("✅ Should allow a student to leave a class", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: student,
         req: {} as Request,
         res: {} as Response,
       };
       const args = { classID: createdClass.id };
+      // first join
+      await classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo);
       const result = (await classResolvers.Mutation.leaveClass(
         null,
         args,
@@ -375,6 +355,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
+      const createdClass = await prepareCreateClass();
       const context = { user: null, req: {} as Request, res: {} as Response };
       const args = { classID: createdClass.id };
       await expect(
@@ -383,6 +364,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Forbidden if the user is not a student", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: teacher,
         req: {} as Request,
@@ -407,17 +389,18 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw an error if the student is not in the class", async () => {
+      const createdClass = await prepareCreateClass();
       const context = {
         user: student,
         req: {} as Request,
         res: {} as Response,
       };
       const args = { classID: createdClass.id };
-      // Ensure the student is not in the class
-      await prisma.class.update({
-        where: { id: createdClass.id },
-        data: { students: { disconnect: { id: student.id } } },
-      });
+      // // Ensure the student is not in the class
+      // await prisma.class.update({
+      //   where: { id: createdClass.id },
+      //   data: { students: { disconnect: { id: student.id } } },
+      // });
       await expect(
         classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("You are not a student in this class");
@@ -449,13 +432,5 @@ describe("Class Resolvers", () => {
         classResolvers.Query.getAllClasses(null, {}, context, {} as GraphQLResolveInfo),
       ).rejects.toThrow("Unauthorized");
     });
-  });
-  afterAll(async () => {
-    // Supprime toutes les données des tables dans l'ordre inverse des dépendances
-    await prisma.$executeRaw`TRUNCATE TABLE "_ClassStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "_TeacherStudents" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "Class" CASCADE;`;
-    await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE;`;
-    await prisma.$disconnect(); // Ferme la connexion Prisma
   });
 });

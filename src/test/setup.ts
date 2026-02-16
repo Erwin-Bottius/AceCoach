@@ -1,12 +1,16 @@
 import { prisma } from "../config/db";
-import { execSync } from "child_process";
+import "../../env.setup";
+import "dotenv/config";
 
 beforeAll(async () => {
-  execSync("npx prisma migrate dev --name init", { env: { ...process.env } });
+  await prisma.$executeRaw`TRUNCATE TABLE "_ClassStudents" CASCADE;`;
+  await prisma.$executeRaw`TRUNCATE TABLE "_TeacherStudents" CASCADE;`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Class" CASCADE;`;
+  await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE;`;
 });
 
 afterAll(async () => {
-  await prisma.$disconnect();
+  await prisma.$disconnect(); // Ferme la connexion Prisma
 });
 
 export { prisma };

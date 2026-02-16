@@ -1,8 +1,11 @@
+import "../../env.setup";
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client";
-
 const prisma = new PrismaClient({
-  log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+  log:
+    process.env.NODE_ENV === "dev" || process.env.NODE_ENV === "test"
+      ? ["query", "error", "warn"]
+      : ["error"],
 });
 
 const connectToDB = async () => {

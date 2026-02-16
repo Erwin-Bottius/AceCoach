@@ -7,23 +7,25 @@ import { generateRefreshToken, generateToken } from "../utils/generateToken";
 import type { SignupInput } from "../inputSchemas/auth.schema";
 
 export async function signup(input: SignupInput) {
-  const { email } = input;
+  const { email, password } = input;
   const isUserExists = await prisma.user.findUnique({
     where: { email },
   });
+
   if (isUserExists) {
     throw new Error("Email already in use");
   }
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(input.password, salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
   const user = await prisma.user.create({
     data: { ...input, password: hashedPassword },
   });
-
+  const safeUser = { ...user, password: "_" };
   const token = generateToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
-  return { token, refreshToken, user };
+
+  return { token, refreshToken, user: safeUser };
 }
 
 export async function login(input: { email: string; password: string }) {

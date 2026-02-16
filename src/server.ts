@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "../env.setup";
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";

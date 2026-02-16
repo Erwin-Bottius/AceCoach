@@ -14,7 +14,7 @@
     "test:db:start": "docker run --rm --name test-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=test_db -p 5433:5432 -d postgres && sleep 3",
     "test:db:stop": "docker stop test-postgres",
     "test:setup": "cross-env NODE_ENV=test npx prisma migrate dev --name init",
-    "test": "yarn test:db:stop &&yarn test:db:start && yarn test:setup && cross-env NODE_ENV=test jest && yarn test:db:stop"
+    "test": "yarn test:db:start && yarn test:setup && cross-env NODE_ENV=test jest && yarn test:db:stop"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -1,10 +1,5 @@
-import { prisma } from "../../config/db";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { signup } from "../../services/auth.service";
+import { login, refreshTheToken, signup } from "../../services/auth.service";
 import { signupSchema, type LoginInput, type SignupInput } from "../../inputSchemas/auth.schema";
-
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 const authResolvers = {
   Mutation: {
@@ -17,19 +12,14 @@ const authResolvers = {
       return signup(args);
     },
     login: async (_parent: any, args: LoginInput) => {
-      const { email, password } = args;
+      const { token, refreshToken, user } = await login(args);
 
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) throw new Error("email or password invalid");
+      return { user, token, refreshToken };
+    },
+    refreshTheToken: async (_parent: any, args: { refreshToken: string }) => {
+      const { token, refreshToken, user } = await refreshTheToken(args.refreshToken);
 
-      const valid = await bcrypt.compare(password, user.password);
-      if (!valid) throw new Error("email or password invalid");
-
-      const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      return { user, token };
+      return { user, token, refreshToken };
     },
   },
 };

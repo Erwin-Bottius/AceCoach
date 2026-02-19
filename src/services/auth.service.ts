@@ -41,7 +41,7 @@ export async function login(input: { email: string; password: string }) {
   return { token, refreshToken, user };
 }
 
-export async function refreshTheToken(userID: string, refreshToken: string) {
+export async function refreshTheToken(refreshToken: string) {
   try {
     const JwtUser = verifyToken(refreshToken);
 
@@ -53,7 +53,7 @@ export async function refreshTheToken(userID: string, refreshToken: string) {
     const newToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    const newRefreshToken = generateRefreshToken(userID);
+    const newRefreshToken = generateRefreshToken(JwtUser.userId);
 
     return { token: newToken, refreshToken: newRefreshToken, user };
   } catch (err) {

@@ -1,4 +1,3 @@
-import { prisma } from "../test/setup";
 import authResolvers from "../graphql/resolvers/auth.resolver";
 import type { SignupInput } from "../inputSchemas/auth.schema";
 
@@ -64,7 +63,7 @@ describe("Auth Resolvers", () => {
           email: "unknown@test.com",
           password: "Password123!",
         }),
-      ).rejects.toThrow("email or password invalid");
+      ).rejects.toThrow("Invalid password or email");
     });
 
     it("❌ should throw if password is incorrect", async () => {
@@ -76,7 +75,7 @@ describe("Auth Resolvers", () => {
           email,
           password: "WrongPassword!",
         }),
-      ).rejects.toThrow("email or password invalid");
+      ).rejects.toThrow("Invalid password or email");
     });
     it("✅ should login with correct credentials", async () => {
       const email = "login@test.com";

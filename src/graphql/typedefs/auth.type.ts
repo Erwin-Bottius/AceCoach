@@ -17,7 +17,7 @@ const authTypeDefs = gql`
     ): AuthPayload!
 
     login(email: String!, password: String!): AuthPayload!
-    refreshTheToken(token: String!): AuthPayload!
+    refreshTheToken(refreshToken: String!): AuthPayload!
   }
 `;
 

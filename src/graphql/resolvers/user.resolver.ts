@@ -1,12 +1,12 @@
 import { prisma } from "../../config/db";
 
-import type { UserInput } from "../../inputSchemas/user.schema";
+import { userUpateSchema, type UserUpdateInput } from "../../inputSchemas/user.schema";
 import { requireAuth } from "../../utils/authWrapper";
 import type { MyContext } from "../context";
 
 const userResolvers = {
   Query: {
-    getAllUsers: async () => {
+    getAllUsers: requireAuth(async () => {
       return prisma.user.findMany({
         select: {
           id: true,
@@ -40,19 +40,24 @@ const userResolvers = {
           },
         },
       });
-    },
-    getMe: async (_parent: any, _args: any, context: any) => {
+    }),
+    getMe: async (_parent: any, _args: any, context: MyContext) => {
       return context.user || null;
     },
   },
   Mutation: {
-    updateUser: requireAuth(async (_parent: any, args: UserInput, context: MyContext) => {
+    updateUser: requireAuth(async (_parent: any, args: UserUpdateInput, context: MyContext) => {
       const userId = context.user?.id;
       if (!userId) throw new Error("Unauthorized");
+      const zodValidation = userUpateSchema.safeParse(args);
+      if (!zodValidation.success) {
+        const errorMessages = zodValidation.error!.issues;
+        throw new Error(errorMessages.map((issue) => issue.message).join("."));
+      }
       const existingUser = await prisma.user.findUnique({
         where: { id: userId },
       });
-      if (!existingUser) throw new Error("Class not found");
+      if (!existingUser) throw new Error("User not found");
 
       return prisma.user.update({
         where: { id: userId },

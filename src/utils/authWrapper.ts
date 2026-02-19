@@ -5,8 +5,8 @@ export const requireAuth = <TSource = any, TArgs = any>(
   resolver: GraphQLFieldResolver<TSource, MyContext, TArgs>,
 ) => {
   return async (parent: TSource, args: TArgs, context: MyContext, info: GraphQLResolveInfo) => {
-    if (!context.user?.id) {
-      throw new Error("Unauthorized");
+    if (context.error) {
+      throw new Error(context.error.message);
     }
     return resolver(parent, args, context, info);
   };

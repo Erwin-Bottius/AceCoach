@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { verifyToken } from "../utils/verifyToken";
 import { prisma } from "../config/db";
-import { Role } from "../generated/prisma/enums";
+import type { Role } from "../generated/prisma/enums";
 
 export interface MyContext {
   req: Request;
@@ -13,6 +13,7 @@ export interface MyContext {
     lastName: string;
     role: Role;
   } | null;
+  error: Error | null;
 }
 
 export async function createContext({
@@ -23,10 +24,8 @@ export async function createContext({
   res: Response;
 }): Promise<MyContext> {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return { req, res, user: null };
-
+  if (!authHeader) return { req, res, user: null, error: new Error("Invalid token") };
   const token = authHeader.replace("Bearer ", "");
-
   try {
     const JwtUserId = verifyToken(token);
     let user = null;
@@ -42,13 +41,15 @@ export async function createContext({
         },
       });
     }
-    console.log("User in context:", user, JwtUserId); // Debug log
+
     return {
       req,
       res,
       user,
+      error: null,
     };
-  } catch {
-    return { req, res, user: null };
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    return { req, res, user: null, error };
   }
 }

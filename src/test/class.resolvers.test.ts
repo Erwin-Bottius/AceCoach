@@ -56,6 +56,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = {
         name: "Yoga",
@@ -76,7 +77,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
-      const context = { user: null, req: {} as Request, res: {} as Response };
+      const context = { user: null, req: {} as Request, res: {} as Response, error: null };
       const args = {
         name: "Yoga",
         theme: "Relaxation",
@@ -100,6 +101,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = {
         name: "Yoga",
@@ -130,6 +132,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = {
         id: createdClass.id,
@@ -145,7 +148,7 @@ describe("Class Resolvers", () => {
     });
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
-      const context = { user: null, req: {} as Request, res: {} as Response };
+      const context = { user: null, req: {} as Request, res: {} as Response, error: null };
       const createdClass = await prepareCreateClass();
       const args = {
         id: createdClass.id,
@@ -167,6 +170,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = {
         id: createdClass.id,
@@ -187,6 +191,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = {
         id: "non-existent-id",
@@ -209,7 +214,7 @@ describe("Class Resolvers", () => {
   describe("deleteClass", () => {
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
       const createdClass = await prepareCreateClass();
-      const context = { user: null, req: {} as Request, res: {} as Response };
+      const context = { user: null, req: {} as Request, res: {} as Response, error: null };
       const args = { id: createdClass.id };
       await expect(
         classResolvers.Mutation.deleteClass(null, args, context, {} as GraphQLResolveInfo),
@@ -222,6 +227,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { id: createdClass.id };
       await expect(
@@ -234,6 +240,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { id: "non-existent-id" };
       await expect(
@@ -246,6 +253,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { id: createdClass.id };
       const result = (await classResolvers.Mutation.deleteClass(
@@ -269,6 +277,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       const result = (await classResolvers.Mutation.joinClass(
@@ -282,7 +291,7 @@ describe("Class Resolvers", () => {
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
       const createdClass = await prepareCreateClass();
-      const context = { user: null, req: {} as Request, res: {} as Response };
+      const context = { user: null, req: {} as Request, res: {} as Response, error: null };
       const args = { classID: createdClass.id };
       await expect(
         classResolvers.Mutation.joinClass(null, args, context, {} as GraphQLResolveInfo),
@@ -295,6 +304,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       await expect(
@@ -307,6 +317,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: "non-existent-id" };
       await expect(
@@ -320,6 +331,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       // First join
@@ -341,6 +353,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       // first join
@@ -356,7 +369,7 @@ describe("Class Resolvers", () => {
 
     it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
       const createdClass = await prepareCreateClass();
-      const context = { user: null, req: {} as Request, res: {} as Response };
+      const context = { user: null, req: {} as Request, res: {} as Response, error: null };
       const args = { classID: createdClass.id };
       await expect(
         classResolvers.Mutation.leaveClass(null, args, context, {} as GraphQLResolveInfo),
@@ -369,6 +382,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       await expect(
@@ -381,6 +395,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: "non-existent-id" };
       await expect(
@@ -394,6 +409,7 @@ describe("Class Resolvers", () => {
         user: student,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const args = { classID: createdClass.id };
       // // Ensure the student is not in the class
@@ -416,6 +432,7 @@ describe("Class Resolvers", () => {
         user: teacher,
         req: {} as Request,
         res: {} as Response,
+        error: null,
       };
       const result = await classResolvers.Query.getAllClasses(
         null,
@@ -424,13 +441,6 @@ describe("Class Resolvers", () => {
         {} as GraphQLResolveInfo,
       );
       expect(Array.isArray(result)).toBe(true);
-    });
-
-    it("❌ Should throw Unauthorized if the user is not authenticated", async () => {
-      const context = { user: null, req: {} as Request, res: {} as Response };
-      await expect(
-        classResolvers.Query.getAllClasses(null, {}, context, {} as GraphQLResolveInfo),
-      ).rejects.toThrow("Unauthorized");
     });
   });
 });

@@ -4,6 +4,24 @@ import type { ClassInput, ClassUpdateInput } from "../../inputSchemas/class.sche
 import { requireAuth } from "../../utils/authWrapper";
 import type { MyContext } from "../context";
 
+interface CreateManyClassesArgs {
+  inputs: Array<
+    Pick<
+      ClassInput,
+      | "name"
+      | "theme"
+      | "date"
+      | "duration"
+      | "capacity"
+      | "level"
+      | "location"
+      | "price"
+      | "isPublished"
+      | "teacherID"
+    >
+  >;
+}
+
 const classResolvers = {
   Query: {
     getAllClasses: requireAuth(async () => {
@@ -37,7 +55,6 @@ const classResolvers = {
 
       if (!user || !user.id) throw new Error("Unauthorized");
       if (user.role !== "TEACHER") throw new Error("Forbidden");
-
       return prisma.class.create({
         data: {
           name: args.name,
@@ -46,6 +63,9 @@ const classResolvers = {
           duration: args.duration,
           capacity: args.capacity,
           level: args.level,
+          location: args.location,
+          price: args.price,
+          isPublished: args.isPublished,
           teacherID: user.id,
         },
         include: {
@@ -61,6 +81,53 @@ const classResolvers = {
         },
       });
     }),
+    createManyClasses: requireAuth(
+      async (_parent: any, args: CreateManyClassesArgs, context: MyContext) => {
+        const user = context.user;
+
+        if (!user || !user.id) throw new Error("Unauthorized");
+        if (user.role !== "TEACHER") throw new Error("Forbidden");
+
+        return prisma.$transaction(
+          args.inputs.map((input) =>
+            prisma.class.create({
+              data: {
+                name: input.name,
+                theme: input.theme,
+                date: input.date,
+                duration: input.duration,
+                capacity: input.capacity,
+                level: input.level,
+                location: input.location,
+                price: input.price,
+                isPublished: input.isPublished,
+                teacherID: user.id,
+              },
+              include: {
+                teacher: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+                students: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+            }),
+          ),
+        );
+      },
+    ),
 
     updateClass: requireAuth(async (_parent: any, args: ClassUpdateInput, context: any) => {
       const userId = context.user?.id;
@@ -86,6 +153,9 @@ const classResolvers = {
           duration: args.duration ?? undefined,
           capacity: args.capacity ?? undefined,
           level: args.level ?? undefined,
+          location: args.location ?? undefined,
+          price: args.price ?? undefined,
+          isPublished: args.isPublished ?? undefined,
           teacherID: args.teacherID ?? undefined,
         },
         include: {
@@ -142,6 +212,11 @@ const classResolvers = {
       });
       if (isStudentInClass) throw new Error("You are already a student in this class");
 
+      prisma.user.update({
+        where: { id: userId },
+        data: { classesJoined: { connect: { id: args.classID } } },
+      });
+
       return prisma.class.update({
         where: { id: args.classID },
         data: { students: { connect: { id: userId } } },
@@ -188,6 +263,12 @@ const classResolvers = {
       });
       if (!isStudentInClass)
         throw new Error("You are not a student in this class, so you cannot leave it");
+
+      prisma.user.update({
+        where: { id: userId },
+        data: { classesJoined: { disconnect: { id: args.classID } } },
+      });
+
       return prisma.class.update({
         where: { id: args.classID },
         data: { students: { disconnect: { id: userId } } },

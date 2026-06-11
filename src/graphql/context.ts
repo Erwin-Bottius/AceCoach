@@ -29,6 +29,7 @@ export async function createContext({
   try {
     const JwtUserId = verifyToken(token);
     let user = null;
+
     if (JwtUserId) {
       user = await prisma.user.findUnique({
         where: { id: JwtUserId.userId },
@@ -38,6 +39,30 @@ export async function createContext({
           lastName: true,
           email: true,
           role: true,
+          classesJoined: {
+            select: {
+              id: true,
+              name: true,
+              theme: true,
+              date: true,
+              duration: true,
+              capacity: true,
+              level: true,
+              teacherID: true,
+            },
+          },
+          classesTaught: {
+            select: {
+              id: true,
+              name: true,
+              theme: true,
+              date: true,
+              duration: true,
+              capacity: true,
+              level: true,
+              teacherID: true,
+            },
+          },
         },
       });
     }

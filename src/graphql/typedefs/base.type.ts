@@ -1,5 +1,7 @@
 import { gql } from "graphql-tag";
 const baseTypeDefs = gql`
+  scalar DateTime
+
   type Query {
     _empty: String
   }

@@ -28,11 +28,13 @@ export type AggregateClass = {
 export type ClassAvgAggregateOutputType = {
   duration: number | null;
   capacity: number | null;
+  price: number | null;
 };
 
 export type ClassSumAggregateOutputType = {
   duration: number | null;
   capacity: number | null;
+  price: number | null;
 };
 
 export type ClassMinAggregateOutputType = {
@@ -43,6 +45,9 @@ export type ClassMinAggregateOutputType = {
   duration: number | null;
   capacity: number | null;
   level: string | null;
+  location: string | null;
+  price: number | null;
+  isPublished: boolean | null;
   createdAt: Date | null;
   updatedAt: Date | null;
   teacherID: string | null;
@@ -56,6 +61,9 @@ export type ClassMaxAggregateOutputType = {
   duration: number | null;
   capacity: number | null;
   level: string | null;
+  location: string | null;
+  price: number | null;
+  isPublished: boolean | null;
   createdAt: Date | null;
   updatedAt: Date | null;
   teacherID: string | null;
@@ -69,6 +77,9 @@ export type ClassCountAggregateOutputType = {
   duration: number;
   capacity: number;
   level: number;
+  location: number;
+  price: number;
+  isPublished: number;
   createdAt: number;
   updatedAt: number;
   teacherID: number;
@@ -78,11 +89,13 @@ export type ClassCountAggregateOutputType = {
 export type ClassAvgAggregateInputType = {
   duration?: true;
   capacity?: true;
+  price?: true;
 };
 
 export type ClassSumAggregateInputType = {
   duration?: true;
   capacity?: true;
+  price?: true;
 };
 
 export type ClassMinAggregateInputType = {
@@ -93,6 +106,9 @@ export type ClassMinAggregateInputType = {
   duration?: true;
   capacity?: true;
   level?: true;
+  location?: true;
+  price?: true;
+  isPublished?: true;
   createdAt?: true;
   updatedAt?: true;
   teacherID?: true;
@@ -106,6 +122,9 @@ export type ClassMaxAggregateInputType = {
   duration?: true;
   capacity?: true;
   level?: true;
+  location?: true;
+  price?: true;
+  isPublished?: true;
   createdAt?: true;
   updatedAt?: true;
   teacherID?: true;
@@ -119,6 +138,9 @@ export type ClassCountAggregateInputType = {
   duration?: true;
   capacity?: true;
   level?: true;
+  location?: true;
+  price?: true;
+  isPublished?: true;
   createdAt?: true;
   updatedAt?: true;
   teacherID?: true;
@@ -220,6 +242,9 @@ export type ClassGroupByOutputType = {
   duration: number;
   capacity: number | null;
   level: string | null;
+  location: string | null;
+  price: number | null;
+  isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
   teacherID: string;
@@ -253,6 +278,9 @@ export type ClassWhereInput = {
   duration?: Prisma.IntFilter<"Class"> | number;
   capacity?: Prisma.IntNullableFilter<"Class"> | number | null;
   level?: Prisma.StringNullableFilter<"Class"> | string | null;
+  location?: Prisma.StringNullableFilter<"Class"> | string | null;
+  price?: Prisma.IntNullableFilter<"Class"> | number | null;
+  isPublished?: Prisma.BoolFilter<"Class"> | boolean;
   createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
   teacherID?: Prisma.StringFilter<"Class"> | string;
@@ -268,6 +296,9 @@ export type ClassOrderByWithRelationInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder;
   level?: Prisma.SortOrderInput | Prisma.SortOrder;
+  location?: Prisma.SortOrderInput | Prisma.SortOrder;
+  price?: Prisma.SortOrderInput | Prisma.SortOrder;
+  isPublished?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   teacherID?: Prisma.SortOrder;
@@ -287,6 +318,9 @@ export type ClassWhereUniqueInput = Prisma.AtLeast<
     duration?: Prisma.IntFilter<"Class"> | number;
     capacity?: Prisma.IntNullableFilter<"Class"> | number | null;
     level?: Prisma.StringNullableFilter<"Class"> | string | null;
+    location?: Prisma.StringNullableFilter<"Class"> | string | null;
+    price?: Prisma.IntNullableFilter<"Class"> | number | null;
+    isPublished?: Prisma.BoolFilter<"Class"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
     teacherID?: Prisma.StringFilter<"Class"> | string;
@@ -304,6 +338,9 @@ export type ClassOrderByWithAggregationInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder;
   level?: Prisma.SortOrderInput | Prisma.SortOrder;
+  location?: Prisma.SortOrderInput | Prisma.SortOrder;
+  price?: Prisma.SortOrderInput | Prisma.SortOrder;
+  isPublished?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   teacherID?: Prisma.SortOrder;
@@ -325,6 +362,9 @@ export type ClassScalarWhereWithAggregatesInput = {
   duration?: Prisma.IntWithAggregatesFilter<"Class"> | number;
   capacity?: Prisma.IntNullableWithAggregatesFilter<"Class"> | number | null;
   level?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null;
+  location?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null;
+  price?: Prisma.IntNullableWithAggregatesFilter<"Class"> | number | null;
+  isPublished?: Prisma.BoolWithAggregatesFilter<"Class"> | boolean;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Class"> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Class"> | Date | string;
   teacherID?: Prisma.StringWithAggregatesFilter<"Class"> | string;
@@ -338,6 +378,9 @@ export type ClassCreateInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   teacher: Prisma.UserCreateNestedOneWithoutClassesTaughtInput;
@@ -352,6 +395,9 @@ export type ClassUncheckedCreateInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   teacherID: string;
@@ -366,6 +412,9 @@ export type ClassUpdateInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacher?: Prisma.UserUpdateOneRequiredWithoutClassesTaughtNestedInput;
@@ -380,6 +429,9 @@ export type ClassUncheckedUpdateInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacherID?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -394,6 +446,9 @@ export type ClassCreateManyInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   teacherID: string;
@@ -407,6 +462,9 @@ export type ClassUpdateManyMutationInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -419,6 +477,9 @@ export type ClassUncheckedUpdateManyInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacherID?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -442,6 +503,9 @@ export type ClassCountOrderByAggregateInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrder;
   level?: Prisma.SortOrder;
+  location?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
+  isPublished?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   teacherID?: Prisma.SortOrder;
@@ -450,6 +514,7 @@ export type ClassCountOrderByAggregateInput = {
 export type ClassAvgOrderByAggregateInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
 };
 
 export type ClassMaxOrderByAggregateInput = {
@@ -460,6 +525,9 @@ export type ClassMaxOrderByAggregateInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrder;
   level?: Prisma.SortOrder;
+  location?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
+  isPublished?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   teacherID?: Prisma.SortOrder;
@@ -473,6 +541,9 @@ export type ClassMinOrderByAggregateInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrder;
   level?: Prisma.SortOrder;
+  location?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
+  isPublished?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   teacherID?: Prisma.SortOrder;
@@ -481,6 +552,7 @@ export type ClassMinOrderByAggregateInput = {
 export type ClassSumOrderByAggregateInput = {
   duration?: Prisma.SortOrder;
   capacity?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
 };
 
 export type ClassCreateNestedManyWithoutTeacherInput = {
@@ -671,6 +743,10 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null;
 };
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean;
+};
+
 export type ClassCreateWithoutTeacherInput = {
   id?: string;
   name: string;
@@ -679,6 +755,9 @@ export type ClassCreateWithoutTeacherInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   students?: Prisma.UserCreateNestedManyWithoutClassesJoinedInput;
@@ -692,6 +771,9 @@ export type ClassUncheckedCreateWithoutTeacherInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   students?: Prisma.UserUncheckedCreateNestedManyWithoutClassesJoinedInput;
@@ -718,6 +800,9 @@ export type ClassCreateWithoutStudentsInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   teacher: Prisma.UserCreateNestedOneWithoutClassesTaughtInput;
@@ -731,6 +816,9 @@ export type ClassUncheckedCreateWithoutStudentsInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   teacherID: string;
@@ -783,6 +871,9 @@ export type ClassScalarWhereInput = {
   duration?: Prisma.IntFilter<"Class"> | number;
   capacity?: Prisma.IntNullableFilter<"Class"> | number | null;
   level?: Prisma.StringNullableFilter<"Class"> | string | null;
+  location?: Prisma.StringNullableFilter<"Class"> | string | null;
+  price?: Prisma.IntNullableFilter<"Class"> | number | null;
+  isPublished?: Prisma.BoolFilter<"Class"> | boolean;
   createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string;
   teacherID?: Prisma.StringFilter<"Class"> | string;
@@ -824,6 +915,9 @@ export type ClassCreateManyTeacherInput = {
   duration: number;
   capacity?: number | null;
   level?: string | null;
+  location?: string | null;
+  price?: number | null;
+  isPublished?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -836,6 +930,9 @@ export type ClassUpdateWithoutTeacherInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   students?: Prisma.UserUpdateManyWithoutClassesJoinedNestedInput;
@@ -849,6 +946,9 @@ export type ClassUncheckedUpdateWithoutTeacherInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   students?: Prisma.UserUncheckedUpdateManyWithoutClassesJoinedNestedInput;
@@ -862,6 +962,9 @@ export type ClassUncheckedUpdateManyWithoutTeacherInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -874,6 +977,9 @@ export type ClassUpdateWithoutStudentsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacher?: Prisma.UserUpdateOneRequiredWithoutClassesTaughtNestedInput;
@@ -887,6 +993,9 @@ export type ClassUncheckedUpdateWithoutStudentsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacherID?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -900,6 +1009,9 @@ export type ClassUncheckedUpdateManyWithoutStudentsInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number;
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   teacherID?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -951,6 +1063,9 @@ export type ClassSelect<
     duration?: boolean;
     capacity?: boolean;
     level?: boolean;
+    location?: boolean;
+    price?: boolean;
+    isPublished?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     teacherID?: boolean;
@@ -972,6 +1087,9 @@ export type ClassSelectCreateManyAndReturn<
     duration?: boolean;
     capacity?: boolean;
     level?: boolean;
+    location?: boolean;
+    price?: boolean;
+    isPublished?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     teacherID?: boolean;
@@ -991,6 +1109,9 @@ export type ClassSelectUpdateManyAndReturn<
     duration?: boolean;
     capacity?: boolean;
     level?: boolean;
+    location?: boolean;
+    price?: boolean;
+    isPublished?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     teacherID?: boolean;
@@ -1007,6 +1128,9 @@ export type ClassSelectScalar = {
   duration?: boolean;
   capacity?: boolean;
   level?: boolean;
+  location?: boolean;
+  price?: boolean;
+  isPublished?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
   teacherID?: boolean;
@@ -1022,6 +1146,9 @@ export type ClassOmit<
   | "duration"
   | "capacity"
   | "level"
+  | "location"
+  | "price"
+  | "isPublished"
   | "createdAt"
   | "updatedAt"
   | "teacherID",
@@ -1062,6 +1189,9 @@ export type $ClassPayload<
       duration: number;
       capacity: number | null;
       level: string | null;
+      location: string | null;
+      price: number | null;
+      isPublished: boolean;
       createdAt: Date;
       updatedAt: Date;
       teacherID: string;
@@ -1633,6 +1763,9 @@ export interface ClassFieldRefs {
   readonly duration: Prisma.FieldRef<"Class", "Int">;
   readonly capacity: Prisma.FieldRef<"Class", "Int">;
   readonly level: Prisma.FieldRef<"Class", "String">;
+  readonly location: Prisma.FieldRef<"Class", "String">;
+  readonly price: Prisma.FieldRef<"Class", "Int">;
+  readonly isPublished: Prisma.FieldRef<"Class", "Boolean">;
   readonly createdAt: Prisma.FieldRef<"Class", "DateTime">;
   readonly updatedAt: Prisma.FieldRef<"Class", "DateTime">;
   readonly teacherID: Prisma.FieldRef<"Class", "String">;

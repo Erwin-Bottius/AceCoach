@@ -41,9 +41,9 @@ const userResolvers = {
         },
       });
     }),
-    getMe: async (_parent: any, _args: any, context: MyContext) => {
+    getMe: requireAuth(async (_parent: any, args: UserUpdateInput, context: MyContext) => {
       return context.user || null;
-    },
+    }),
   },
   Mutation: {
     updateUser: requireAuth(async (_parent: any, args: UserUpdateInput, context: MyContext) => {

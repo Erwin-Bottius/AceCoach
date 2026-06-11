@@ -44,6 +44,9 @@ model Class {
   duration  Int      
   capacity  Int?
   level     String?
+  location  String?
+  price     Int?
+  isPublished Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

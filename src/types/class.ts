@@ -1,4 +1,4 @@
-import { User } from "./user";
+import type { User } from "./user";
 
 export interface Class {
   id: string;
@@ -8,6 +8,9 @@ export interface Class {
   duration: number;
   capacity: number;
   level: string;
+  location?: string;
+  price?: number;
+  isPublished?: boolean;
   teacherID: string;
   teacher: Partial<User>;
   students: Partial<User>[];

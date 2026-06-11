@@ -619,6 +619,9 @@ export const ClassScalarFieldEnum = {
   duration: "duration",
   capacity: "capacity",
   level: "level",
+  location: "location",
+  price: "price",
+  isPublished: "isPublished",
   createdAt: "createdAt",
   updatedAt: "updatedAt",
   teacherID: "teacherID",
@@ -690,6 +693,11 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Int[]">;
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Boolean">;
 
 /**
  * Reference to a field of type 'Float'
